@@ -1518,6 +1518,30 @@ const dashboardPages = {
     }
 
 window.location.href = "dashboard.html";
+    const formData = new FormData();
+
+formData.append("email", email);
+formData.append("password", password);
+
+fetch("login.php", {
+    method: "POST",
+    body: formData
+})
+.then(response => response.json())
+.then(data => {
+
+    if (data.success) {
+
+        window.location.href =
+            "dashboard.html";
+
+    } else {
+
+        alert(data.message);
+
+    }
+
+});
   </script>
 </body>
 
