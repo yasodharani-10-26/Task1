@@ -459,7 +459,79 @@
             }
 
         }
+/* ================================
+   STUDENT SEARCH
+   ================================= */
 
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 11px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    color: #1e293b;
+}
+
+.search-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-btn {
+    border: none;
+    padding: 11px 18px;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.search-btn:hover {
+    background: #1d4ed8;
+}
+
+.clear-search-btn {
+    border: none;
+    padding: 11px 18px;
+    border-radius: 8px;
+    background: #64748b;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.clear-search-btn:hover {
+    background: #475569;
+}
+
+.search-result-info {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+@media(max-width: 600px) {
+    .search-box {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-btn,
+    .clear-search-btn {
+        width: 100%;
+    }
+}
     </style>
 
 </head>
@@ -569,26 +641,48 @@
             class="students-card"
         >
 
-            <div class="students-header">
+         <div class="students-header">
 
-                <h2 id="studentsTitle">
+    <h2 id="studentsTitle">
+        Students
+    </h2>
 
-                    Students
+    <span id="studentCount" class="count">
+        0 Students
+    </span>
 
-                </h2>
+</div>
 
+<!-- STUDENT SEARCH -->
+<div class="search-box">
 
-                <span
-                    id="studentCount"
-                    class="count"
-                >
+    <input
+        type="text"
+        id="studentSearch"
+        class="search-input"
+        placeholder="Search student by name..."
+    >
 
-                    0 Students
+    <button
+        id="searchBtn"
+        class="search-btn"
+    >
+        🔍 Search
+    </button>
 
-                </span>
+    <button
+        id="clearSearchBtn"
+        class="clear-search-btn"
+    >
+        Clear
+    </button>
 
-            </div>
+</div>
 
+<div
+    id="searchResultInfo"
+    class="search-result-info"
+></div>
 
             <div
                 id="studentsContent"
@@ -746,7 +840,25 @@
                 "studentCount"
             );
 
+const studentSearch =
+    document.getElementById(
+        "studentSearch"
+    );
 
+const searchBtn =
+    document.getElementById(
+        "searchBtn"
+    );
+
+const clearSearchBtn =
+    document.getElementById(
+        "clearSearchBtn"
+    );
+
+const searchResultInfo =
+    document.getElementById(
+        "searchResultInfo"
+    );
         const logoutBtn =
             document.getElementById(
                 "logoutBtn"
@@ -1485,12 +1597,223 @@
 
             }
 
+let currentStudents = [];
+            function displayStudents(students) {
 
-            displayStudents(
-                students
-            );
+    // Store the students that the current role is allowed to see
+    currentStudents = [...students];
+
+    renderStudents(currentStudents);
+
+}
+            function renderStudents(students) {
+
+    studentCount.textContent =
+        `${students.length} Student${students.length !== 1 ? "s" : ""}`;
+
+    if (students.length === 0) {
+
+        studentsContent.innerHTML = `
+
+            <div class="empty">
+
+                No students found.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+    /* ======================================
+       SORT BY ROLL NUMBER
+       ======================================= */
+
+    students.sort(
+        (a, b) =>
+            String(
+                a.rollNumber || ""
+            ).localeCompare(
+                String(
+                    b.rollNumber || ""
+                )
+            )
+    );
+
+    let html = `
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Name</th>
+
+                        <th>Roll Number</th>
+
+                        <th>Branch</th>
+
+                        <th>Section</th>
+
+                        <th>Email</th>
+
+                        <th>Coding Profile</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+    `;
+
+    students.forEach(
+        (student, index) => {
+
+            let codingProfile =
+                "Not provided";
+
+            if (student.codingLink) {
+
+                codingProfile = `
+
+                    <a
+                        class="coding-link"
+                        href="${escapeAttribute(student.codingLink)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        View Profile
+                    </a>
+
+                `;
+
+            }
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            student.name || "N/A"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            student.rollNumber || "N/A"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            student.branch || "N/A"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            student.section || "N/A"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            student.email || "N/A"
+                        )}
+                    </td>
+
+                    <td>
+                        ${codingProfile}
+                    </td>
+
+                </tr>
+
+            `;
 
         }
+    );
+
+    html += `
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
+
+    studentsContent.innerHTML = html;
+
+}
+            function searchStudents() {
+
+    const searchText =
+        studentSearch.value
+            .trim()
+            .toLowerCase();
+
+    // If search box is empty, show all students
+    if (!searchText) {
+
+        searchResultInfo.textContent = "";
+
+        renderStudents(
+            [...currentStudents]
+        );
+
+        return;
+    }
+
+    /*
+     * Search only by student NAME.
+     *
+     * Example:
+     * "ch"      → Ch.Yasodha Rani
+     * "y"       → Yasodha Rani
+     * "yasodha" → Ch.Yasodha Rani
+     */
+
+    const matchedStudents =
+        currentStudents.filter(
+            student => {
+
+                const name =
+                    String(
+                        student.name || ""
+                    ).toLowerCase();
+
+                return name.includes(
+                    searchText
+                );
+
+            }
+        );
+
+    searchResultInfo.textContent =
+        `Found ${matchedStudents.length} student${
+            matchedStudents.length !== 1
+                ? "s"
+                : ""
+        } matching "${studentSearch.value}"`;
+
+    renderStudents(
+        [...matchedStudents]
+    );
+
+}
 
 
         /* ==========================================
@@ -1778,7 +2101,54 @@
 
             }
         );
+/* ==========================================
+   STUDENT SEARCH
+   ========================================== */
 
+searchBtn.addEventListener(
+    "click",
+    searchStudents
+);
+
+
+/*
+ * Search when pressing ENTER
+ */
+
+studentSearch.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key === "Enter") {
+
+            searchStudents();
+
+        }
+
+    }
+);
+
+
+/*
+ * Clear search
+ */
+
+clearSearchBtn.addEventListener(
+    "click",
+    () => {
+
+        studentSearch.value = "";
+
+        searchResultInfo.textContent = "";
+
+        renderStudents(
+            [...currentStudents]
+        );
+
+        studentSearch.focus();
+
+    }
+);
     </script>
 
 
