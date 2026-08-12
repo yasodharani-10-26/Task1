@@ -1,1 +1,1795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | JigsawConnect</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================
+       GLOBAL DESIGN
+       ========================================================= */
+
+    :root {
+      --primary: #06b6d4;
+      --primary-hover: #0891b2;
+
+      --bg-gradient:
+        linear-gradient(
+          135deg,
+          #020617 0%,
+          #0f172a 50%,
+          #1e1b4b 100%
+        );
+
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-border: rgba(255, 255, 255, 0.08);
+
+      --input-bg: rgba(15, 23, 42, 0.6);
+      --input-border: rgba(255, 255, 255, 0.1);
+      --input-focus: rgba(6, 182, 212, 0.4);
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+
+      --status-error: #ef4444;
+      --status-error-bg: rgba(239, 68, 68, 0.1);
+
+      --status-success: #10b981;
+      --status-success-bg: rgba(16, 185, 129, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      padding: 24px;
+
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    /* =========================================================
+       CARD
+       ========================================================= */
+
+    .card {
+      width: 100%;
+      max-width: 470px;
+
+      background: var(--card-bg);
+
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+
+      padding: 40px 32px;
+
+      border-radius: 24px;
+      border: 1px solid var(--card-border);
+
+      box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
+      animation:
+        cardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    h2 {
+      text-align: center;
+
+      font-size: 1.75rem;
+      font-weight: 700;
+
+      letter-spacing: -0.5px;
+
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+
+      color: var(--text-muted);
+
+      font-size: 14px;
+
+      margin-bottom: 28px;
+    }
+
+    /* =========================================================
+       MESSAGE BANNER
+       ========================================================= */
+
+    #msg {
+      text-align: center;
+
+      padding: 12px;
+
+      border-radius: 12px;
+
+      font-size: 14px;
+      font-weight: 500;
+
+      margin-bottom: 20px;
+
+      display: none;
+
+      border: 1px solid transparent;
+
+      animation: msgSlideIn 0.3s ease;
+    }
+
+    /* =========================================================
+       FORM
+       ========================================================= */
+
+    .form-group {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    input,
+    select {
+      width: 100%;
+
+      padding: 14px 16px;
+
+      background: var(--input-bg);
+
+      border: 1px solid var(--input-border);
+
+      border-radius: 12px;
+
+      color: var(--text-main);
+
+      font-size: 14px;
+
+      outline: none;
+
+      transition: all 0.25s ease;
+    }
+
+    input[type="password"],
+    input[type="text"].pass-input {
+      padding-right: 46px;
+    }
+
+    input:hover,
+    select:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--primary);
+
+      background: rgba(15, 23, 42, 0.8);
+
+      box-shadow:
+        0 0 0 4px var(--input-focus);
+    }
+
+    input::placeholder {
+      color: #64748b;
+    }
+
+    select {
+      cursor: pointer;
+    }
+
+    select option {
+      background: #0f172a;
+      color: var(--text-main);
+    }
+
+    /* =========================================================
+       PASSWORD TOGGLE
+       ========================================================= */
+
+    .password-toggle {
+      position: absolute;
+
+      right: 14px;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      background: none;
+
+      border: none;
+
+      cursor: pointer;
+
+      color: var(--text-muted);
+
+      padding: 4px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      transition: color 0.2s ease;
+    }
+
+    .password-toggle:hover {
+      color: var(--text-main);
+    }
+
+    /* =========================================================
+       ROLE BASED SECTIONS
+       ========================================================= */
+
+    .role-fields {
+      display: none;
+
+      flex-direction: column;
+
+      margin-top: 4px;
+      margin-bottom: 4px;
+
+      padding-top: 6px;
+
+      border-top: 1px dashed var(--input-border);
+
+      animation: fieldFadeIn 0.3s ease;
+    }
+
+    .role-fields.visible {
+      display: flex;
+    }
+
+    .role-fields-label {
+      font-size: 12px;
+
+      font-weight: 600;
+
+      letter-spacing: 0.06em;
+
+      text-transform: uppercase;
+
+      color: var(--primary);
+
+      margin: 14px 0 12px;
+    }
+
+    .field-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .field-row .form-group {
+      flex: 1;
+    }
+
+    /* =========================================================
+       CODING PLATFORM LINK
+       ========================================================= */
+
+    .field-help {
+      color: var(--text-muted);
+
+      font-size: 11px;
+
+      margin-top: -10px;
+
+      margin-bottom: 14px;
+
+      line-height: 1.5;
+    }
+
+    /* =========================================================
+       BUTTON
+       ========================================================= */
+
+    button[type="submit"] {
+      width: 100%;
+
+      padding: 14px;
+
+      margin-top: 10px;
+
+      border: none;
+
+      border-radius: 12px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--primary),
+          #2563eb
+        );
+
+      color: white;
+
+      font-size: 15px;
+
+      font-weight: 600;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 4px 12px rgba(6, 182, 212, 0.2);
+
+      transition: all 0.25s ease;
+    }
+
+    button[type="submit"]:hover {
+      transform: translateY(-1px);
+
+      box-shadow:
+        0 6px 20px rgba(6, 182, 212, 0.4);
+    }
+
+    button[type="submit"]:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* =========================================================
+       LOGIN REDIRECT
+       ========================================================= */
+
+    .login-redirect {
+      color: var(--text-muted);
+
+      text-decoration: none;
+
+      display: block;
+
+      text-align: center;
+
+      font-size: 14px;
+
+      margin-top: 24px;
+    }
+
+    .login-redirect:hover,
+    .login-redirect:hover strong {
+      color: var(--primary);
+    }
+
+    .login-redirect strong {
+      color: #fff;
+    }
+
+    /* =========================================================
+       ANIMATIONS
+       ========================================================= */
+
+    @keyframes cardFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes msgSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fieldFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =========================================================
+       MOBILE RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 500px) {
+
+      body {
+        padding: 15px;
+      }
+
+      .card {
+        padding: 30px 20px;
+        border-radius: 20px;
+      }
+
+      .field-row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+
+    <h2>Create Account</h2>
+
+    <p class="subtitle">
+      Join the JigsawConnect network
+    </p>
+
+    <div id="msg"></div>
+
+    <!-- =====================================================
+         REGISTRATION FORM
+         ===================================================== -->
+
+    <form id="registerForm" novalidate>
+
+      <!-- ===============================
+           ROLE
+           =============================== -->
+
+      <div class="form-group">
+
+        <select
+          id="role"
+          aria-label="Account Role"
+          required
+        >
+
+          <option value="" disabled selected>
+            Select Your Role
+          </option>
+
+          <option value="student">
+            Student
+          </option>
+
+          <option value="coordinator">
+            Coordinator
+          </option>
+
+          <option value="hod">
+            HOD
+          </option>
+
+          <option value="principal">
+            Principal
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- =================================================
+           STUDENT FIELDS
+           ================================================= -->
+
+      <div
+        id="studentFields"
+        class="role-fields"
+      >
+
+        <p class="role-fields-label">
+          Student Details
+        </p>
+
+
+        <!-- Name -->
+
+        <div class="form-group">
+
+          <input
+            type="text"
+            id="studentName"
+            placeholder="Full Name"
+            autocomplete="name"
+          >
+
+        </div>
+
+
+        <!-- Roll Number -->
+
+        <div class="form-group">
+
+          <input
+            type="text"
+            id="rollNumber"
+            placeholder="Roll Number"
+            autocomplete="off"
+          >
+
+        </div>
+
+
+        <!-- Branch + Section -->
+
+        <div class="field-row">
+
+          <div class="form-group">
+
+            <select id="studentBranch">
+
+              <option value="" disabled selected>
+                Select Branch
+              </option>
+
+              <option value="CSE">
+                CSE
+              </option>
+
+              <option value="CSE-DS">
+                CSE - Data Science
+              </option>
+
+              <option value="CSE-AIML">
+                CSE - AI & ML
+              </option>
+
+              <option value="ECE">
+                ECE
+              </option>
+
+              <option value="EEE">
+                EEE
+              </option>
+
+              <option value="MECH">
+                Mechanical
+              </option>
+
+              <option value="CIVIL">
+                Civil
+              </option>
+
+              <option value="IT">
+                Information Technology
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <select id="studentSection">
+
+              <option value="" disabled selected>
+                Select Section
+              </option>
+
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+              <option value="C">Section C</option>
+              <option value="D">Section D</option>
+              <option value="E">Section E</option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- Coding Platform -->
+
+        <div class="form-group">
+
+          <input
+            type="url"
+            id="codingPlatform"
+            placeholder="Coding Platform Link"
+            autocomplete="url"
+          >
+
+        </div>
+
+        <p class="field-help">
+          Example: HackerRank, LeetCode, CodeChef, GitHub, etc.
+        </p>
+
+      </div>
+
+
+      <!-- =================================================
+           COORDINATOR FIELDS
+           ================================================= -->
+
+      <div
+        id="coordinatorFields"
+        class="role-fields"
+      >
+
+        <p class="role-fields-label">
+          Coordinator Details
+        </p>
+
+
+        <!-- Branch -->
+
+        <div class="form-group">
+
+          <select id="coordinatorBranch">
+
+            <option value="" disabled selected>
+              Select Branch
+            </option>
+
+            <option value="CSE">
+              CSE
+            </option>
+
+            <option value="CSE-DS">
+              CSE - Data Science
+            </option>
+
+            <option value="CSE-AIML">
+              CSE - AI & ML
+            </option>
+
+            <option value="ECE">
+              ECE
+            </option>
+
+            <option value="EEE">
+              EEE
+            </option>
+
+            <option value="MECH">
+              Mechanical
+            </option>
+
+            <option value="CIVIL">
+              Civil
+            </option>
+
+            <option value="IT">
+              Information Technology
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- Section -->
+
+        <div class="form-group">
+
+          <select id="coordinatorSection">
+
+            <option value="" disabled selected>
+              Select Section
+            </option>
+
+            <option value="A">Section A</option>
+            <option value="B">Section B</option>
+            <option value="C">Section C</option>
+            <option value="D">Section D</option>
+            <option value="E">Section E</option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           HOD FIELDS
+           ================================================= -->
+
+      <div
+        id="hodFields"
+        class="role-fields"
+      >
+
+        <p class="role-fields-label">
+          HOD Details
+        </p>
+
+
+        <!-- Branch -->
+
+        <div class="form-group">
+
+          <select id="hodBranch">
+
+            <option value="" disabled selected>
+              Select Branch
+            </option>
+
+            <option value="CSE">
+              CSE
+            </option>
+
+            <option value="CSE-DS">
+              CSE - Data Science
+            </option>
+
+            <option value="CSE-AIML">
+              CSE - AI & ML
+            </option>
+
+            <option value="ECE">
+              ECE
+            </option>
+
+            <option value="EEE">
+              EEE
+            </option>
+
+            <option value="MECH">
+              Mechanical
+            </option>
+
+            <option value="CIVIL">
+              Civil
+            </option>
+
+            <option value="IT">
+              Information Technology
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           PRINCIPAL FIELDS
+           ================================================= -->
+
+      <div
+        id="principalFields"
+        class="role-fields"
+      >
+
+        <p class="role-fields-label">
+          Principal Details
+        </p>
+
+        <p class="field-help" style="margin-top: 0;">
+          Principal registration requires only an email and password.
+        </p>
+
+      </div>
+
+
+      <!-- =================================================
+           EMAIL
+           ALL ROLES
+           ================================================= -->
+
+      <div class="form-group">
+
+        <input
+          type="email"
+          id="email"
+          placeholder="Email Address"
+          autocomplete="email"
+          required
+        >
+
+      </div>
+
+
+      <!-- =================================================
+           PASSWORD
+           ALL ROLES
+           ================================================= -->
+
+      <div class="form-group">
+
+        <input
+          type="password"
+          id="pass"
+          placeholder="Password"
+          autocomplete="new-password"
+          required
+        >
+
+        <button
+          type="button"
+          class="password-toggle"
+          data-target="pass"
+          aria-label="Show password"
+        >
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+
+            <circle cx="12" cy="12" r="3"></circle>
+
+          </svg>
+
+        </button>
+
+      </div>
+
+
+      <!-- =================================================
+           CONFIRM PASSWORD
+           ================================================= -->
+
+      <div class="form-group">
+
+        <input
+          type="password"
+          id="cpass"
+          placeholder="Confirm Password"
+          autocomplete="new-password"
+          required
+        >
+
+        <button
+          type="button"
+          class="password-toggle"
+          data-target="cpass"
+          aria-label="Show password"
+        >
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+
+            <circle cx="12" cy="12" r="3"></circle>
+
+          </svg>
+
+        </button>
+
+      </div>
+
+
+      <!-- =================================================
+           SUBMIT
+           ================================================= -->
+
+      <button
+        type="submit"
+        id="registerButton"
+      >
+        Register Account
+      </button>
+
+    </form>
+
+
+    <!-- =====================================================
+         LOGIN
+         ===================================================== -->
+
+    <a
+      href="student-login.html"
+      class="login-redirect"
+    >
+      Already have an account?
+      <strong>Sign In</strong>
+    </a>
+
+  </div>
+
+
+  <!-- =======================================================
+       FIREBASE
+       ======================================================= -->
+
+  <script type="module">
+
+    import {
+      initializeApp
+    }
+    from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+
+
+    import {
+      getAuth,
+      createUserWithEmailAndPassword
+    }
+    from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+
+    import {
+      getDatabase,
+      ref,
+      set
+    }
+    from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+
+
+    /* =======================================================
+       FIREBASE CONFIGURATION
+       ======================================================= */
+
+    const firebaseConfig = {
+
+      apiKey:
+        "AIzaSyCaCkliRZk8HmNtOsJpoA084YhNY7MeMWM",
+
+      authDomain:
+        "jigsawconnect-677da.firebaseapp.com",
+
+      databaseURL:
+        "https://jigsawconnect-677da-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+      projectId:
+        "jigsawconnect-677da",
+
+      storageBucket:
+        "jigsawconnect-677da.firebasestorage.app",
+
+      messagingSenderId:
+        "200774226361",
+
+      appId:
+        "1:200774226361:web:266cb216968403793f6668"
+    };
+
+
+    /* =======================================================
+       INITIALIZE FIREBASE
+       ======================================================= */
+
+    const app =
+      initializeApp(firebaseConfig);
+
+    const auth =
+      getAuth(app);
+
+    const db =
+      getDatabase(app);
+
+
+    /* =======================================================
+       DOM ELEMENTS
+       ======================================================= */
+
+    const form =
+      document.getElementById("registerForm");
+
+    const msgBanner =
+      document.getElementById("msg");
+
+    const roleSelect =
+      document.getElementById("role");
+
+    const registerButton =
+      document.getElementById("registerButton");
+
+
+    const studentFields =
+      document.getElementById("studentFields");
+
+    const coordinatorFields =
+      document.getElementById("coordinatorFields");
+
+    const hodFields =
+      document.getElementById("hodFields");
+
+    const principalFields =
+      document.getElementById("principalFields");
+
+
+    /* =======================================================
+       MESSAGE FUNCTION
+       ======================================================= */
+
+    function showBanner(text, state) {
+
+      msgBanner.textContent = text;
+
+      msgBanner.style.display = "block";
+
+
+      if (state === "error") {
+
+        msgBanner.style.background =
+          "var(--status-error-bg)";
+
+        msgBanner.style.borderColor =
+          "var(--status-error)";
+
+        msgBanner.style.color =
+          "var(--status-error)";
+      }
+
+
+      else if (state === "success") {
+
+        msgBanner.style.background =
+          "var(--status-success-bg)";
+
+        msgBanner.style.borderColor =
+          "var(--status-success)";
+
+        msgBanner.style.color =
+          "var(--status-success)";
+      }
+    }
+
+
+    /* =======================================================
+       HIDE ALL ROLE FIELDS
+       ======================================================= */
+
+    function hideAllRoleFields() {
+
+      studentFields.classList.remove("visible");
+
+      coordinatorFields.classList.remove("visible");
+
+      hodFields.classList.remove("visible");
+
+      principalFields.classList.remove("visible");
+    }
+
+
+    /* =======================================================
+       CLEAR ROLE FIELD REQUIREMENTS
+       ======================================================= */
+
+    function clearRequiredFields() {
+
+      const fields = [
+
+        "studentName",
+        "rollNumber",
+        "studentBranch",
+        "studentSection",
+        "codingPlatform",
+
+        "coordinatorBranch",
+        "coordinatorSection",
+
+        "hodBranch"
+
+      ];
+
+
+      fields.forEach(id => {
+
+        const element =
+          document.getElementById(id);
+
+        element.required = false;
+
+      });
+    }
+
+
+    /* =======================================================
+       ROLE BASED FIELD VISIBILITY
+       ======================================================= */
+
+    function updateRoleFields() {
+
+      const role =
+        roleSelect.value;
+
+
+      hideAllRoleFields();
+
+      clearRequiredFields();
+
+
+      /* =========================
+         STUDENT
+         ========================= */
+
+      if (role === "student") {
+
+        studentFields.classList.add("visible");
+
+
+        document.getElementById(
+          "studentName"
+        ).required = true;
+
+
+        document.getElementById(
+          "rollNumber"
+        ).required = true;
+
+
+        document.getElementById(
+          "studentBranch"
+        ).required = true;
+
+
+        document.getElementById(
+          "studentSection"
+        ).required = true;
+
+
+        document.getElementById(
+          "codingPlatform"
+        ).required = false;
+
+      }
+
+
+      /* =========================
+         COORDINATOR
+         ========================= */
+
+      else if (role === "coordinator") {
+
+        coordinatorFields.classList.add("visible");
+
+
+        document.getElementById(
+          "coordinatorBranch"
+        ).required = true;
+
+
+        document.getElementById(
+          "coordinatorSection"
+        ).required = true;
+
+      }
+
+
+      /* =========================
+         HOD
+         ========================= */
+
+      else if (role === "hod") {
+
+        hodFields.classList.add("visible");
+
+
+        document.getElementById(
+          "hodBranch"
+        ).required = true;
+
+      }
+
+
+      /* =========================
+         PRINCIPAL
+         ========================= */
+
+      else if (role === "principal") {
+
+        principalFields.classList.add("visible");
+
+      }
+
+    }
+
+
+    roleSelect.addEventListener(
+      "change",
+      updateRoleFields
+    );
+
+
+    updateRoleFields();
+
+
+    /* =======================================================
+       PASSWORD VISIBILITY
+       ======================================================= */
+
+    document
+      .querySelectorAll(".password-toggle")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const targetId =
+              button.getAttribute("data-target");
+
+            const targetInput =
+              document.getElementById(targetId);
+
+
+            if (
+              targetInput.type ===
+              "password"
+            ) {
+
+              targetInput.type =
+                "text";
+
+              targetInput.classList.add(
+                "pass-input"
+              );
+
+
+              button.innerHTML = `
+
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+
+                  <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
+
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+
+                </svg>
+
+              `;
+
+            }
+
+
+            else {
+
+              targetInput.type =
+                "password";
+
+              targetInput.classList.remove(
+                "pass-input"
+              );
+
+
+              button.innerHTML = `
+
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="3"
+                  ></circle>
+
+                </svg>
+
+              `;
+
+            }
+
+          }
+        );
+
+      });
+
+
+    /* =======================================================
+       REGISTRATION
+       ======================================================= */
+
+    form.addEventListener(
+      "submit",
+      async (e) => {
+
+        e.preventDefault();
+
+
+        msgBanner.style.display =
+          "none";
+
+
+        /* ===================================================
+           BASIC VALUES
+           =================================================== */
+
+        const role =
+          roleSelect.value;
+
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim();
+
+        const password =
+          document
+            .getElementById("pass")
+            .value;
+
+        const confirmPassword =
+          document
+            .getElementById("cpass")
+            .value;
+
+
+        /* ===================================================
+           BASIC VALIDATION
+           =================================================== */
+
+        if (
+          !role ||
+          !email ||
+          !password ||
+          !confirmPassword
+        ) {
+
+          showBanner(
+            "Please fill all required fields.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        /* ===================================================
+           PASSWORD LENGTH
+           =================================================== */
+
+        if (password.length < 6) {
+
+          showBanner(
+            "Password must contain at least 6 characters.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        /* ===================================================
+           PASSWORD MATCH
+           =================================================== */
+
+        if (
+          password !==
+          confirmPassword
+        ) {
+
+          showBanner(
+            "Passwords do not match.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        /* ===================================================
+           PROFILE DATA
+           =================================================== */
+
+        let profileData = {};
+
+
+        /* ===================================================
+           STUDENT DATA
+           =================================================== */
+
+        if (role === "student") {
+
+          const name =
+            document
+              .getElementById("studentName")
+              .value
+              .trim();
+
+
+          const rollNumber =
+            document
+              .getElementById("rollNumber")
+              .value
+              .trim();
+
+
+          const branch =
+            document
+              .getElementById("studentBranch")
+              .value;
+
+
+          const section =
+            document
+              .getElementById("studentSection")
+              .value;
+
+
+          const codingPlatform =
+            document
+              .getElementById("codingPlatform")
+              .value
+              .trim();
+
+
+          if (
+            !name ||
+            !rollNumber ||
+            !branch ||
+            !section
+          ) {
+
+            showBanner(
+              "Please fill all student details.",
+              "error"
+            );
+
+            return;
+          }
+
+
+          /* URL validation if provided */
+
+          if (codingPlatform) {
+
+            try {
+
+              new URL(codingPlatform);
+
+            } catch {
+
+              showBanner(
+                "Please enter a valid coding platform URL.",
+                "error"
+              );
+
+              return;
+            }
+
+          }
+
+
+          profileData = {
+
+            name: name,
+
+            rollNumber: rollNumber,
+
+            branch: branch,
+
+            section: section,
+
+            codingPlatform:
+              codingPlatform
+
+          };
+
+        }
+
+
+        /* ===================================================
+           COORDINATOR DATA
+           =================================================== */
+
+        else if (
+          role === "coordinator"
+        ) {
+
+          const branch =
+            document
+              .getElementById("coordinatorBranch")
+              .value;
+
+
+          const section =
+            document
+              .getElementById("coordinatorSection")
+              .value;
+
+
+          if (!branch || !section) {
+
+            showBanner(
+              "Please select coordinator branch and section.",
+              "error"
+            );
+
+            return;
+          }
+
+
+          profileData = {
+
+            branch: branch,
+
+            section: section
+
+          };
+
+        }
+
+
+        /* ===================================================
+           HOD DATA
+           =================================================== */
+
+        else if (
+          role === "hod"
+        ) {
+
+          const branch =
+            document
+              .getElementById("hodBranch")
+              .value;
+
+
+          if (!branch) {
+
+            showBanner(
+              "Please select the HOD branch.",
+              "error"
+            );
+
+            return;
+          }
+
+
+          profileData = {
+
+            branch: branch
+
+          };
+
+        }
+
+
+        /* ===================================================
+           PRINCIPAL DATA
+           =================================================== */
+
+        else if (
+          role === "principal"
+        ) {
+
+          profileData = {};
+
+        }
+
+
+        /* ===================================================
+           FIREBASE REGISTRATION
+           =================================================== */
+
+        try {
+
+          registerButton.disabled =
+            true;
+
+          registerButton.textContent =
+            "Creating Account...";
+
+
+          /* ================================================
+             CREATE FIREBASE AUTH USER
+             ================================================ */
+
+          const userCredential =
+            await createUserWithEmailAndPassword(
+              auth,
+              email,
+              password
+            );
+
+
+          const user =
+            userCredential.user;
+
+
+          /* ================================================
+             SAVE USER PROFILE
+             ================================================ */
+
+          await set(
+            ref(
+              db,
+              "users/" + user.uid
+            ),
+            {
+
+              email: email,
+
+              role: role,
+
+              createdOn: Date.now(),
+
+              ...profileData
+
+            }
+          );
+
+
+          /* ================================================
+             SUCCESS
+             ================================================ */
+
+          showBanner(
+            `${role.charAt(0).toUpperCase() + role.slice(1)} registration successful!`,
+            "success"
+          );
+
+
+          registerButton.textContent =
+            "Registration Successful";
+
+
+          /* ================================================
+             REDIRECT
+             ================================================ */
+
+          setTimeout(
+            () => {
+
+              /*
+               * Keep your existing login page.
+               * The login page can identify the user's role
+               * from Firebase Realtime Database.
+               */
+
+              window.location.href =
+                "student-login.html";
+
+            },
+            1500
+          );
+
+        }
+
+
+        /* ===================================================
+           FIREBASE ERRORS
+           =================================================== */
+
+        catch (error) {
+
+          console.error(
+            "Firebase Registration Error:",
+            error.code,
+            error.message
+          );
+
+
+          registerButton.disabled =
+            false;
+
+          registerButton.textContent =
+            "Register Account";
+
+
+          switch (error.code) {
+
+
+            case "auth/email-already-in-use":
+
+              showBanner(
+                "This email address is already registered.",
+                "error"
+              );
+
+              break;
+
+
+            case "auth/invalid-email":
+
+              showBanner(
+                "Please enter a valid email address.",
+                "error"
+              );
+
+              break;
+
+
+            case "auth/weak-password":
+
+              showBanner(
+                "Password is too weak. Use at least 6 characters.",
+                "error"
+              );
+
+              break;
+
+
+            case "auth/operation-not-allowed":
+
+              showBanner(
+                "Email/password authentication is disabled in Firebase.",
+                "error"
+              );
+
+              break;
+
+
+            case "auth/network-request-failed":
+
+              showBanner(
+                "Network error. Please check your internet connection.",
+                "error"
+              );
+
+              break;
+
+
+            default:
+
+              showBanner(
+                "Registration failed: " +
+                error.message,
+                "error"
+              );
+
+              break;
+
+          }
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
 
