@@ -1787,7 +1787,40 @@
 
       }
     );
+const formData = new FormData();
 
+formData.append("name", name);
+formData.append("email", email);
+formData.append("password", password);
+formData.append("role", role);
+formData.append("rollNumber", rollNumber);
+formData.append("branch", branch);
+formData.append("section", section);
+formData.append("codingLink", codingLink);
+
+fetch("register.php", {
+    method: "POST",
+    body: formData
+})
+.then(response => response.json())
+.then(data => {
+
+    if (data.success) {
+
+        alert(
+            "Registration successful!"
+        );
+
+        window.location.href =
+            "login.html";
+
+    } else {
+
+        alert(data.message);
+
+    }
+
+});
   </script>
 
 </body>
