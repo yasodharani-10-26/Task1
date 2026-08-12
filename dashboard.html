@@ -2165,6 +2165,21 @@ fetch(
         }
 
     });
+            fetch("get_students.php")
+    .then(response => response.json())
+    .then(data => {
+
+        if (data.success) {
+
+            console.log(data.students);
+
+        } else {
+
+            console.log(data.message);
+
+        }
+
+    });
     </script>
 
 
